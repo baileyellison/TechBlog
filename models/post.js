@@ -1,17 +1,18 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize({
-  ... // configuration object from config/config.json
-});
+const sequelize = require('../config/connection'); // Adjust path as necessary
+
+const User = require('./user'); // Adjust path as per your directory structure
+const Comment = require('./comment'); // Adjust path as per your directory structure
 
 const Post = sequelize.define('Post', {
   title: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   content: {
     type: DataTypes.TEXT,
-    allowNull: false
-  }
+    allowNull: false,
+  },
 });
 
 // Define associations

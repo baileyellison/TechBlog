@@ -1,4 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../config/connection'); // Adjust path as necessary
 const bcrypt = require('bcryptjs');
 
 module.exports = (sequelize) => {

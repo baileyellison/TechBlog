@@ -1,0 +1,16 @@
+<!-- views/dashboard.handlebars -->
+<h1>Welcome, {{ user.username }}</h1>
+
+{{#if posts.length}}
+  {{#each posts}}
+    <div class="post">
+      <h2>{{ title }}</h2>
+      <p>{{ body }}</p>
+      <p>Published on {{ formatDate createdAt }}</p>
+    </div>
+  {{/each}}
+{{else}}
+  <p>No posts yet.</p>
+{{/if}}
+
+<a href="/post/new">Create New Post</a>

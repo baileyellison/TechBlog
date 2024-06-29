@@ -1,0 +1,9 @@
+<!-- views/home.handlebars -->
+{{!-- Example of iterating over blog posts --}}
+{{#each posts}}
+  <div class="post">
+    <h2>{{ title }}</h2>
+    <p>{{ body }}</p>
+    <p>Published on {{ formatDate createdAt }}</p>
+  </div>
+{{/each}}

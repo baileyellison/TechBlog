@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const bcrypt = require('bcryptjs');
-const db = require('./models');
+const db = require('./models'); // Adjust the path as per your directory structure
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware for body parsing
+// Middleware for parsing JSON and URL-encoded body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -75,7 +75,7 @@ app.post('/logout', (req, res) => {
   });
 });
 
-// Start server
+// Start server and synchronize database
 db.sequelize.sync()
   .then(() => {
     app.listen(PORT, () => {
