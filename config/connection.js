@@ -1,24 +1,21 @@
-const { Sequelize } = require('sequelize');
-const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config.json')[env];
+const Sequelize = require('sequelize');
+require('dotenv').config();
 
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  {
-    host: config.host,
-    dialect: config.dialect,
-    logging: false // Disable logging (you can enable it if needed)
-  }
-);
+let sequelize;
 
-sequelize.authenticate()
-  .then(() => {
-    console.log('Database connection successful');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+if (process.env.tech_blog_URL) {
+  sequelize = new Sequelize(process.env.tech_blog_URL);
+} else {
+  sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
+    {
+      host: 'localhost',
+      dialect: 'mysql',
+      port: '3001'
+    }
+  );
+}
 
 module.exports = sequelize;

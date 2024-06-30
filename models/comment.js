@@ -1,18 +1,49 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/connection'); // Adjust path as necessary
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../config/connection');
 
-const User = require('./user'); // Adjust path as per your directory structure
-const Post = require('./post'); // Adjust path as per your directory structure
+class Comment extends Model {}
 
-const Comment = sequelize.define('Comment', {
-  content: {
-    type: DataTypes.TEXT,
-    allowNull: false,
+Comment.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    comment_text: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'user',
+        key: 'id'
+      }
+    },
+    post_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'post',
+        key: 'id'
+      }
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW
+    }
   },
-});
-
-// Define associations
-Comment.belongsTo(User);  // A Comment belongs to a User
-Comment.belongsTo(Post);  // A Comment belongs to a Post
+  {
+    sequelize,
+    timestamps: false,
+    freezeTableName: true,
+    underscored: true,
+    modelName: 'comment'
+  }
+);
 
 module.exports = Comment;
