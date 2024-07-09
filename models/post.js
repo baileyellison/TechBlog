@@ -23,7 +23,7 @@ Post.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'user',
+        model: 'user', // Make sure 'user' matches your actual table name for users
         key: 'id'
       }
     },
@@ -38,7 +38,7 @@ Post.init(
     timestamps: false,
     freezeTableName: true,
     underscored: true,
-    modelName: 'post'
+    modelName: 'post' // Ensure modelName matches the name used in associations
   }
 );
 

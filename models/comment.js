@@ -19,7 +19,7 @@ Comment.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'user',
+        model: 'user', // Make sure 'user' matches your actual table name for users
         key: 'id'
       }
     },
@@ -27,7 +27,7 @@ Comment.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'post',
+        model: 'post', // Make sure 'post' matches your actual table name for posts
         key: 'id'
       }
     },
@@ -42,7 +42,7 @@ Comment.init(
     timestamps: false,
     freezeTableName: true,
     underscored: true,
-    modelName: 'comment'
+    modelName: 'comment' // Ensure modelName matches the name used in associations
   }
 );
 

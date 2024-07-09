@@ -1,87 +1,60 @@
+// Require necessary modules
+require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const session = require('express-session');
+const exphbs = require('express-handlebars');
+const routes = require('./controllers');
+const helpers = require('./utils/helpers');
+
+// Require Sequelize and its session store
+const sequelize = require('./config/connection');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const bcrypt = require('bcryptjs');
-const db = require('./models'); // Adjust the path as per your directory structure
-const dotenv = require('dotenv');
 
-dotenv.config();
-
+// Create Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware for parsing JSON and URL-encoded body
+// Configure Handlebars engine
+const hbs = exphbs.create({
+  helpers,
+  partialsDir: path.join(__dirname, 'views/partials')
+});
+
+// Configure session middleware
+const sess = {
+  secret: process.env.SESSION_SECRET || 'my_default_secret',
+  cookie: { maxAge: 24 * 60 * 60 * 1000 }, // Session expires after 24 hours (optional)
+  resave: false,
+  saveUninitialized: true,
+  store: new SequelizeStore({
+    db: sequelize,
+    expiration: 24 * 60 * 60 * 1000 // Session expires after 24 hours (optional)
+  })
+};
+
+// Use session middleware
+app.use(session(sess));
+
+// Set up Handlebars as the view engine
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware for session management
-const sessionStore = new SequelizeStore({
-  db: db.sequelize,
-});
+// Routes
+app.use(routes);
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  store: sessionStore,
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
-  }
-}));
-
-// Define routes for user authentication
-app.post('/signup', async (req, res) => {
-  const { username, password } = req.body;
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await db.User.create({
-      username,
-      password: hashedPassword
-    });
-    req.session.user = newUser; // Store user in session
-    res.status(201).send('User created');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error creating user');
-  }
-});
-
-app.post('/signin', async (req, res) => {
-  const { username, password } = req.body;
-  try {
-    const user = await db.User.findOne({ where: { username } });
-    if (!user) {
-      return res.status(404).send('User not found');
-    }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).send('Invalid password');
-    }
-    req.session.user = user; // Store user in session
-    res.status(200).send('User authenticated');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error signing in');
-  }
-});
-
-app.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).send('Error logging out');
-    }
-    res.clearCookie('connect.sid'); // Clear session cookie
-    res.status(200).send('Logged out successfully');
-  });
-});
-
-// Start server and synchronize database
-db.sequelize.sync()
+// Sync Sequelize models and start server
+sequelize.sync({ force: false }) // Set `force` to true to drop and re-create tables on every app start (useful during development)
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`Server is running on http://localhost:${PORT}`);
     });
   })
   .catch(err => {
-    console.error('Unable to sync database:', err);
+    console.error('Error syncing database:', err);
   });

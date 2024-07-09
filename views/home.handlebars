@@ -1,9 +1,11 @@
-<!-- views/home.handlebars -->
-{{!-- Example of iterating over blog posts --}}
-{{#each posts}}
-  <div class="post">
-    <h2>{{ title }}</h2>
-    <p>{{ body }}</p>
-    <p>Published on {{ formatDate createdAt }}</p>
+{{#if loggedIn}}
+  <h1>Welcome, {{username}}</h1>
+  <div>
+    {{#each posts}}
+      {{> post-card}}
+    {{/each}}
   </div>
-{{/each}}
+{{else}}
+  <h1>Welcome to our blog!</h1>
+  <p>Please <a href="/form">login</a> or <a href="/signup">sign up</a> to view and comment on posts.</p>
+{{/if}}

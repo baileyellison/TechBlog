@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Session middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'my_default_secret',
   resave: false,
   saveUninitialized: true,
   store: new SequelizeStore({
@@ -22,7 +22,7 @@ app.use(session({
 // Authentication middleware
 const withAuth = (req, res, next) => {
   if (!req.session.loggedIn) {
-    res.redirect('/login');
+    res.redirect('./form');
   } else {
     console.log('User is logged in:', req.session.user_id); // Debugging line
     next();
