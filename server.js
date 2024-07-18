@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 // Configure Handlebars engine
 const hbs = exphbs.create({
   helpers,
-  partialsDir: path.join(__dirname, 'views/partials')
+  partialsDir: path.join(__dirname, 'views', 'partials')
 });
 
 // Configure session middleware

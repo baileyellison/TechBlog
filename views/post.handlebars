@@ -4,16 +4,18 @@
 <div>
   {{#each comments}}
     <div class="comment">
-      <p>{{comment_text}}</p>
-      <p><strong>{{user.username}}</strong></p>
+      <p>{{this.comment_text}}</p>
+      <p><strong>{{this.user.username}}</strong></p>
     </div>
   {{/each}}
 </div>
 {{#if loggedIn}}
-  <form id="comment-form" data-id="{{id}}">
-    <textarea id="comment-text" placeholder="Add a comment"></textarea>
+  <form id="comment-form" data-id="{{post.id}}">
+    <textarea name="text" placeholder="Add a comment"></textarea>
     <button type="submit">Submit</button>
   </form>
+
+  <script src="/js/comment.js"></script>
 {{else}}
-  <p>Please <a href="/form">login</a> or <a href="/signup">sign up</a> to comment.</p>
+  <p>Please <a href="/login">login</a> or <a href="/signup">sign up</a> to comment.</p>
 {{/if}}
